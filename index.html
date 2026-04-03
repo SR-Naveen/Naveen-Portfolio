@@ -94,6 +94,7 @@
             font-weight: 700;
             margin: 0;
             letter-spacing: 1px;
+            text-decoration: none;
         }
 
         .logo span {
@@ -206,6 +207,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-top: 10px;
+            display: inline-block;
         }
 
         .btn:hover {
@@ -246,7 +248,7 @@
             color: #555;
         }
 
-        /* ===== SKILLS (NEW SECTION) ===== */
+        /* ===== SKILLS ===== */
         #skills {
             background: var(--light-bg);
         }
@@ -308,7 +310,7 @@
 
         .card {
             background: var(--card-bg);
-            padding: 40px 20px;
+            padding: 40px 20px 25px 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             border-radius: 15px;
             transition: 0.4s;
@@ -316,6 +318,9 @@
             border-bottom: 4px solid var(--primary-color);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .card::before {
@@ -344,10 +349,14 @@
             z-index: 1;
         }
 
-        .card i {
+        .card i.main-icon {
             font-size: 3rem;
             color: var(--secondary-color);
             margin-bottom: 20px;
+        }
+
+        .card h3 {
+            margin-top: 0;
         }
 
         /* ===== INTERNSHIPS & EDUCATION ===== */
@@ -460,6 +469,13 @@
             box-shadow: 0 5px 15px rgba(10, 167, 206, 0.4);
         }
 
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         /* ===== FOOTER ===== */
         footer {
             background: var(--dark-bg);
@@ -501,7 +517,7 @@
 
     <!-- NAVBAR -->
     <nav id="navbar">
-        <h1 class="logo">Naveen<span>.</span></h1>
+        <h1 class="logo"><a href="#home" style="color: inherit; text-decoration: none;">Naveen<span>.</span></a></h1>
         <ul>
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
@@ -515,7 +531,7 @@
 
     <!-- HOME -->
     <section id="home">
-        <img src="srn.jpeg" alt="Naveen Profile" class="profile" onerror="this.src='https://ui-avatars.com/api/?name=Naveen&background=0D8ABC&color=fff&size=200'">
+        <img src="SNR.jpeg" alt="Naveen Profile" class="profile" onerror="this.src='https://ui-avatars.com/api/?name=Naveen&background=0D8ABC&color=fff&size=200'">
 
         <h1>Hello, I'm Naveen</h1>
       
@@ -542,7 +558,7 @@
         </p>
     </section>
 
-    <!-- SKILLS (NEW SECTION) -->
+    <!-- SKILLS -->
     <section id="skills">
         <h2>Technical Skills</h2>
         <div class="skills-grid">
@@ -574,19 +590,19 @@
         <h2>My Projects</h2>
         <div class="projects-grid">
             <div class="card">
-                <i class="fas fa-laptop-code"></i>
+                <i class="fas fa-laptop-code main-icon"></i>
                 <h3>Personal Portfolio</h3>
                 <p>A responsive and modern personal portfolio website built using HTML, CSS, and JS to showcase my skills dynamically.</p>
             </div>
 
             <div class="card">
-                <i class="fas fa-shield-alt"></i>
+                <i class="fas fa-shield-alt main-icon"></i>
                 <h3>Secure Login UI</h3>
                 <p>An interactive authentication UI design with a modern aesthetic and client-side JavaScript validations.</p>
             </div>
 
             <div class="card">
-                <i class="fas fa-gamepad"></i>
+                <i class="fas fa-gamepad main-icon"></i>
                 <h3>TaskBeacon</h3>
                 <p>Designed the foundational UI layout and logic for a basic interactive game interface using core web technologies.</p>
             </div>
@@ -632,11 +648,17 @@
     <!-- CONTACT -->
     <section id="contact">
         <h2>Let's Connect</h2>
-        <form onsubmit="event.preventDefault(); alert('Thank you! Your message has been sent successfully.');">
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
-            <textarea placeholder="Your Message" required></textarea>
-            <button type="submit">Send Message</button>
+        <!-- Form updated with ID and name attributes for Web3Forms -->
+        <form id="contactForm">
+            <!-- Web3Forms Access Key (Replace with your actual key) -->
+            <input type="hidden" name="access_key" value="ada81c4e-5326-49ec-a042-6d0c8ee2d509">
+            <input type="hidden" name="subject" value="New Contact from Naveen Portfolio">
+            
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+            <textarea name="message" placeholder="Your Message" required></textarea>
+            
+            <button type="submit" id="submitBtn">Send Message <i class="fas fa-paper-plane"></i></button>
         </form>
     </section>
 
@@ -660,7 +682,6 @@
         // Typing Animation Effect
         const typingText = document.querySelector('.typing-text');
         
-        // INGATHAAN MAATHIYIRUKKEN: "B.E. CSE Student" -> "Fresher"
         const phrases = ["Fresher", "Full Stack Developer", "Java Developer", "Software Engineer"];
         
         let phraseIndex = 0;
@@ -692,8 +713,63 @@
             setTimeout(typeEffect, typingSpeed);
         }
 
-        // Start typing effect on load
         document.addEventListener('DOMContentLoaded', typeEffect);
+
+        // Web3Forms Form Submission Logic
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Save original button text
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = 'Sending... <i class="fas fa-spinner fa-spin"></i>';
+            submitBtn.disabled = true;
+
+            const formData = new FormData(form);
+            const object = Object.fromEntries(formData);
+            const json = JSON.stringify(object);
+
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: json
+            })
+            .then(async (response) => {
+                let json = await response.json();
+                if (response.status == 200) {
+                    // Success state
+                    submitBtn.innerHTML = 'Sent Successfully <i class="fas fa-check-circle"></i>';
+                    submitBtn.style.background = '#28a745'; // Green
+                    form.reset();
+                } else {
+                    // API Error state
+                    console.log(response);
+                    submitBtn.innerHTML = 'Error! Try Again <i class="fas fa-times-circle"></i>';
+                    submitBtn.style.background = '#dc3545'; // Red
+                }
+            })
+            .catch(error => {
+                // Network Error state
+                console.log(error);
+                submitBtn.innerHTML = 'Error! Try Again <i class="fas fa-times-circle"></i>';
+                submitBtn.style.background = '#dc3545'; // Red
+            })
+            .then(function() {
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.style.background = '';
+                    submitBtn.disabled = false;
+                }, 3000);
+            });
+        });
     </script>
 
 </body>
