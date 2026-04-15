@@ -34,22 +34,9 @@
             overflow-x: hidden;
         }
 
-        /* View Toggle SPA CSS */
         section {
-            display: none; /* Hide all sections by default */
             padding: 80px 10%;
-            animation: fadeIn 0.8s ease; /* Faster fade for quick tab switching */
-            min-height: calc(100vh - 70px); /* Push footer to bottom */
-        }
-
-        /* Show only the active section */
-        section.active {
-            display: block;
-        }
-
-        /* Home needs flexbox to center content properly */
-        section#home.active {
-            display: flex;
+            animation: fadeIn 1.2s ease;
         }
 
         h2 {
@@ -618,7 +605,7 @@
     </nav>
 
     <!-- HOME -->
-    <section id="home" class="active">
+    <section id="home">
         <img src="srn.jpeg" alt="Naveen Profile" class="profile" onerror="this.src='https://ui-avatars.com/api/?name=Naveen&background=0D8ABC&color=fff&size=200'">
 
         <h1>Hello, I'm Naveen</h1>
@@ -766,35 +753,6 @@
             }
         });
 
-        // --- View Toggle Logic (SPA Routing) ---
-        const sections = document.querySelectorAll('section');
-        const navItems = document.querySelectorAll('.nav-item');
-
-        function switchSection() {
-            // Get hash from URL or default to 'home'
-            let hash = window.location.hash.substring(1);
-            if (!hash || !document.getElementById(hash)) {
-                hash = 'home';
-            }
-
-            // Hide all sections and remove active styles
-            sections.forEach(sec => sec.classList.remove('active'));
-            navItems.forEach(link => link.classList.remove('active'));
-
-            // Show active section and highlight nav link
-            document.getElementById(hash).classList.add('active');
-            const activeLink = document.querySelector(`.nav-item[href="#${hash}"]`);
-            if (activeLink) activeLink.classList.add('active');
-
-            // Scroll to top of the page smoothly
-            window.scrollTo(0, 0);
-        }
-
-        // Listen for URL hash changes (Clicking links or using Back/Forward browser buttons)
-        window.addEventListener('hashchange', switchSection);
-        // Run once on initial page load
-        window.addEventListener('load', switchSection);
-
         // --- Mobile Menu Toggle Logic (Restored & Fixed) ---
         const mobileMenu = document.getElementById('mobile-menu');
         const navLinks = document.getElementById('nav-links');
@@ -814,7 +772,7 @@
         }
 
         // Close mobile menu when a link is clicked
-        navItems.forEach(link => {
+        document.querySelectorAll('.nav-links li a').forEach(link => {
             link.addEventListener('click', () => {
                 if (navLinks && navLinks.classList.contains('active')) {
                     navLinks.classList.remove('active');
